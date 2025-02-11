@@ -1,0 +1,1575 @@
+########################################################################################
+#                                                                                      #
+#      Growatt SPH Inverter Modbus yaml configuration for ESPHome                      #
+#                                                                                      #
+#      - Use write functions at your own risk                                          #
+#                                                                                      #
+#      - Comment out unused sensors or numbers                                         #
+#        (ex the Grid Timers) for better performance from the ESP                      #
+#                                                                                      #
+#       THE FILE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.                    #
+#       IN NO EVENT SHALL THE AUTHOR OR COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM,      #
+#       DAMAGES OR OTHER LIABILITY                                                     #
+#                                                                                      #
+########################################################################################
+
+
+#######################
+# Configuration begin #
+#######################
+
+substitutions:
+  device_description: Growatt Inverter
+  friendly_name:  Growatt Inverter
+  name: growatt
+
+  # update interval
+  update_interval_set: "30s" # 60s recommended
+
+wifi:
+  ssid: "ssid"
+  password: "password"
+  ## Manual IP - comment out following lines for DHCP
+  #manual_ip:
+  #  static_ip: 192.168.0.20
+  #  gateway: 192.168.0.1
+  #  subnet: 255.255.255.0
+  ## Manual IP
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Growatt Fallback Hotspot"
+    password: "somethingsecret"
+
+
+
+
+
+# HA API - uncomment to enable native HA API, MQTT must then be disabled
+#api:
+# HA API
+
+
+# MQTT Client - Uncomment to enable MQTT Client, HA native client must then be disabled
+mqtt:
+  broker: 192.168.0.12
+  port: 1883
+  username: mqttuser
+  password: mqttpassword
+  discovery: true
+  birth_message: 
+    topic: growatt/status
+    payload: online
+  will_message:
+    topic: growatt/status
+    payload: offline
+
+
+
+esphome:
+  name: ${name}
+
+
+# If using esp8266 be sure to adjust other settings
+#esp8266:
+#  board: d1_mini
+esp32:
+  board: esp32dev
+
+
+
+
+ota:
+  password: "somethingsecret"
+
+
+captive_portal:
+
+
+
+# Logger must be disabled by setting baud to 0 for esp8266 as only 1 uart exists
+logger:
+  baud_rate: 9600
+  #baud_rate: 0
+
+# esp8266 does not have the resources to run local webserver, must be disabled then.
+web_server:
+  port: 80
+  local: true
+
+# If using esp8266 adjust uart GPIO, disable logging and web server, and there might just be enough resources!
+uart:
+  id: uart_modbus
+  baud_rate: 9600
+  rx_pin: GPIO16
+  tx_pin: GPIO17
+  # ESP 8266
+  #rx_pin: GPIO3
+  #tx_pin: GPIO1
+
+
+
+
+####################
+# Configuration end#
+####################
+
+
+modbus:
+  id: modbus_id
+  uart_id: uart_modbus
+
+modbus_controller:
+  id: growatt_modbus_controller
+  address: 0x1
+  modbus_id: modbus_id
+  update_interval: ${update_interval_set}
+
+
+
+##############################
+# Holding Register Switches  #
+##############################
+
+
+switch:
+    # Switch Holding registers - ordered by register id
+    - platform: modbus_controller
+      name: "Inverter - Export Limit Enabled"
+      register_type: holding
+      address: 122
+      use_write_multiple: true
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 1 Enabled"
+      register_type: holding
+      address: 1082
+      use_write_multiple: true
+      bitmask: 1
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 2 Enabled"
+      register_type: holding
+      address: 1085
+      use_write_multiple: true
+      bitmask: 1
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 3 Enabled"
+      register_type: holding
+      address: 1088
+      use_write_multiple: true
+      bitmask: 1
+    - platform: modbus_controller
+      name: "Battery - Battery First AC Charge Enabled"
+      register_type: holding
+      address: 1092
+      use_write_multiple: true
+      bitmask: 1
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 1 Enabled"
+      register_type: holding
+      address: 1102
+      use_write_multiple: true
+      bitmask: 1
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 2 Enabled"
+      register_type: holding
+      address: 1105
+      use_write_multiple: true
+      bitmask: 1
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 3 Enabled"
+      register_type: holding
+      address: 1108
+      use_write_multiple: true
+      bitmask: 1
+      #
+      # Experimental registers for test
+      #
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bDischargeEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 32
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - ForceDischrEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 64
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - ChargeEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 128
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bForceChrEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 256
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bBackUpEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 512
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bInvLimitLoadE"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 1024
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bSpLimitLoadEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 2048
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bACChargeEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 4096
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo - bPVLoadLimitEn"
+    #   register_type: holding
+    #   address: 1008
+    #   use_write_multiple: true
+    #   bitmask: 8192
+
+
+
+
+##############################
+# Holding Register Numbers   #
+##############################
+
+
+number:
+  # Number Holding registers - ordered by register id
+  - platform: modbus_controller
+    name: "Inverter - Max Active Power output percent"
+    register_type: holding
+    mode: box
+    address: 3
+    value_type: U_WORD
+    min_value: 1
+    max_value: 100
+    step: 1
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Inverter - Export Limit Power percent"
+    register_type: holding
+    mode: box
+    address: 123
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    multiply: 10
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Load First Discharge stop SOC"
+    register_type: holding
+    mode: box
+    address: 608
+    value_type: U_WORD
+    min_value: 10
+    max_value: 100
+    step: 1
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Grid First Discharge Power"
+    register_type: holding
+    mode: box
+    address: 1070
+    value_type: U_WORD
+    min_value: 0
+    max_value: 100
+    step: 1
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Grid First Discharge stop SOC"
+    register_type: holding
+    mode: box
+    address: 1071
+    value_type: U_WORD
+    min_value: 10
+    max_value: 100
+    step: 1
+    use_write_multiple: true
+  
+    # Grid First - Timeslot 1
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 1 start Hour"
+    register_type: holding
+    mode: box
+    address: 1080
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = gridfirst_timer1_start_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 1 start Minute"
+    register_type: holding
+    mode: box
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = gridfirst_timer1_start_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+    address: 1080
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 1 stop Hour"
+    register_type: holding
+    mode: box
+    address: 1081
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = gridfirst_timer1_stop_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 1 stop Minute"
+    register_type: holding
+    mode: box
+    address: 1081
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = gridfirst_timer1_stop_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+
+    # Grid First - Timeslot 2
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 2 start Hour"
+    register_type: holding
+    mode: box
+    address: 1083
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = gridfirst_timer2_start_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 2 start Minute"
+    register_type: holding
+    mode: box
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = gridfirst_timer2_start_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+    address: 1083
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 2 stop Hour"
+    register_type: holding
+    mode: box
+    address: 1084
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = gridfirst_timer2_stop_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 2 stop Minute"
+    register_type: holding
+    mode: box
+    address: 1084
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = gridfirst_timer2_stop_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+
+    # Grid First - Timeslot 3
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 3 start Hour"
+    register_type: holding
+    mode: box
+    address: 1086
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = gridfirst_timer3_start_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 3 start Minute"
+    register_type: holding
+    mode: box
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = gridfirst_timer3_start_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+    address: 1086
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 3 stop Hour"
+    register_type: holding
+    mode: box
+    address: 1087
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = gridfirst_timer3_stop_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Grid First Timeslot 3 stop Minute"
+    register_type: holding
+    mode: box
+    address: 1087
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = gridfirst_timer3_stop_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+
+  - platform: modbus_controller
+    name: "Battery - Battery First Charge Power"
+    register_type: holding
+    mode: box
+    address: 1090
+    value_type: U_WORD
+    min_value: 1
+    max_value: 100
+    step: 1
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Battery First Charge stop SOC"
+    register_type: holding
+    mode: box
+    address: 1091
+    value_type: U_WORD
+    min_value: 10
+    max_value: 100
+    step: 1
+    use_write_multiple: true
+
+    # Battery First - Timeslot 1
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 1 start Hour"
+    register_type: holding
+    mode: box
+    address: 1100
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = batfirst_timer1_start_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 1 start Minute"
+    register_type: holding
+    mode: box
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = batfirst_timer1_start_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+    address: 1100
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 1 stop Hour"
+    register_type: holding
+    mode: box
+    address: 1101
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = batfirst_timer1_stop_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 1 stop Minute"
+    register_type: holding
+    mode: box
+    address: 1101
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = batfirst_timer1_stop_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+
+    # Battery First - Timeslot 2
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 2 start Hour"
+    register_type: holding
+    mode: box
+    address: 1103
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = batfirst_timer2_start_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 2 start Minute"
+    register_type: holding
+    mode: box
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = batfirst_timer2_start_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+    address: 1103
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 2 stop Hour"
+    register_type: holding
+    mode: box
+    address: 1104
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = batfirst_timer2_stop_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 2 stop Minute"
+    register_type: holding
+    mode: box
+    address: 1104
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = batfirst_timer2_stop_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+
+    # Battery First - Timeslot 3
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 3 start Hour"
+    register_type: holding
+    mode: box
+    address: 1106
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = batfirst_timer3_start_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 3 start Minute"
+    register_type: holding
+    mode: box
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = batfirst_timer3_start_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+    address: 1106
+    use_write_multiple: true
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 3 stop Hour"
+    register_type: holding
+    mode: box
+    address: 1107
+    value_type: U_WORD
+    min_value: 0
+    max_value: 23
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) >> 8);
+    write_lambda: !lambda |-
+      float hour = x;
+      float minute = batfirst_timer3_stop_minute->get_state();
+      ESP_LOGD("main","hour set to : %f", hour);
+      ESP_LOGD("main","minute set to : %f", minute);
+      float returnval = float((int(hour) << 8 ) + minute );
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  - platform: modbus_controller
+    name: "Battery - Battery First Timeslot 3 stop Minute"
+    register_type: holding
+    mode: box
+    address: 1107
+    value_type: U_WORD
+    min_value: 0
+    max_value: 59
+    step: 1
+    use_write_multiple: true
+    lambda: !lambda |-
+      return float(int(x) & 255);
+    write_lambda: !lambda |-
+      int hour = batfirst_timer3_stop_hour->get_state();
+      int minute = x;
+      ESP_LOGD("main","hour set to : %d", hour);
+      ESP_LOGD("main","minute set to : %d", minute);
+      float returnval = (hour << 8 ) + minute;
+      ESP_LOGD("main","returnval: %f", returnval);
+      return returnval;
+  #
+  # Experimental numbers for testing
+  #
+  # - platform: modbus_controller
+  #   name: "Battery - Float Charge current limit"
+  #   register_type: holding
+  #   mode: box
+  #   address: 1000
+  #   value_type: U_WORD
+  #   min_value: 1000
+  #   max_value: 6000
+  #   step: 1
+  #   use_write_multiple: true
+  # - platform: modbus_controller
+  #   name: "Battery - Charge stop Voltage"
+  #   register_type: holding
+  #   mode: box
+  #   address: 1005
+  #   value_type: U_WORD
+  #   min_value: 480
+  #   max_value: 580
+  #   step: 5
+  # - platform: modbus_controller
+  #   name: "Inverter - upper temp limit for charge "
+  #   register_type: holding
+  #   mode: box
+  #   address: 1012
+  #   value_type: U_WORD
+  #   min_value: 20
+  #   max_value: 1000
+  #   step: 1
+
+
+
+
+##################################
+# Input (READ) Register Sensors  #
+##################################
+    
+
+
+sensor:
+      # Timer read sensor - internal use in esphome for lamdba
+      # Grid First - Timeslot 1 read
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 1 start Hour-READ"
+      id: gridfirst_timer1_start_hour
+      internal: true
+      register_type: holding
+      address: 1080
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 1 start Minute-READ"
+      id: gridfirst_timer1_start_minute
+      internal: true
+      register_type: holding
+      address: 1080
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 1 stop Hour-READ"
+      id: gridfirst_timer1_stop_hour
+      internal: true
+      register_type: holding
+      address: 1081
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 1 stop Minute-READ"
+      id: gridfirst_timer1_stop_minute
+      internal: true
+      register_type: holding
+      address: 1081
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+      # Grid First - Timeslot 2 read
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 2 start Hour-READ"
+      id: gridfirst_timer2_start_hour
+      internal: true
+      register_type: holding
+      address: 1084
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 2 start Minute-READ"
+      id: gridfirst_timer2_start_minute
+      internal: true
+      register_type: holding
+      address: 1084
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 2 stop Hour-READ"
+      id: gridfirst_timer2_stop_hour
+      internal: true
+      register_type: holding
+      address: 1085
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 2 stop Minute-READ"
+      id: gridfirst_timer2_stop_minute
+      internal: true
+      register_type: holding
+      address: 1085
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+      # Grid First - Timeslot 3 read
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 3 start Hour-READ"
+      id: gridfirst_timer3_start_hour
+      internal: true
+      register_type: holding
+      address: 1087
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 3 start Minute-READ"
+      id: gridfirst_timer3_start_minute
+      internal: true
+      register_type: holding
+      address: 1087
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 3 stop Hour-READ"
+      id: gridfirst_timer3_stop_hour
+      internal: true
+      register_type: holding
+      address: 1088
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Grid First Timeslot 3 stop Minute-READ"
+      id: gridfirst_timer3_stop_minute
+      internal: true
+      register_type: holding
+      address: 1088
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+      # Battery First - Timeslot 1 read
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 1 start Hour-READ"
+      id: batfirst_timer1_start_hour
+      internal: true
+      register_type: holding
+      address: 1100
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 1 start Minute-READ"
+      id: batfirst_timer1_start_minute
+      internal: true
+      register_type: holding
+      address: 1100
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 1 stop Hour-READ"
+      id: batfirst_timer1_stop_hour
+      internal: true
+      register_type: holding
+      address: 1101
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 1 stop Minute-READ"
+      id: batfirst_timer1_stop_minute
+      internal: true
+      register_type: holding
+      address: 1101
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+      # Battery First - Timeslot 2 read
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 2 start Hour-READ"
+      id: batfirst_timer2_start_hour
+      internal: true
+      register_type: holding
+      address: 1103
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 2 start Minute-READ"
+      id: batfirst_timer2_start_minute
+      internal: true
+      register_type: holding
+      address: 1103
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 2 stop Hour-READ"
+      id: batfirst_timer2_stop_hour
+      internal: true
+      register_type: holding
+      address: 1104
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 2 stop Minute-READ"
+      id: batfirst_timer2_stop_minute
+      internal: true
+      register_type: holding
+      address: 1104
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+      # Battery First - Timeslot 3 read
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 3 start Hour-READ"
+      id: batfirst_timer3_start_hour
+      internal: true
+      register_type: holding
+      address: 1106
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 3 start Minute-READ"
+      id: batfirst_timer3_start_minute
+      internal: true
+      register_type: holding
+      address: 1106
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 3 stop Hour-READ"
+      id: batfirst_timer3_stop_hour
+      internal: true
+      register_type: holding
+      address: 1107
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) >> 8);
+    - platform: modbus_controller
+      name: "Battery - Battery First Timeslot 3 stop Minute-READ"
+      id: batfirst_timer3_stop_minute
+      internal: true
+      register_type: holding
+      address: 1107
+      value_type: U_WORD
+      lambda: !lambda |-
+        return float(int(x) & 255);
+    # Regular Sensors - ordered by register id
+    - platform: modbus_controller
+      name: "Solar - DC Input Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV1 DC Voltage"
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 3
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV1 DC Current"
+      unit_of_measurement: "A"
+      device_class: current
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 4
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV1 DC Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 5
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV2 DC Voltage"
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 7
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV2 DC Current"
+      unit_of_measurement: "A"
+      device_class: current
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 8
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV2 DC Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 9
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Output Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 35
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Output Power VA"
+      unit_of_measurement: "VA"
+      device_class: apparent_power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 40
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 53
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Energy total"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 55
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV1 Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 59
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - PV2 Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 63
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Solar - Solar Energy total"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 91
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Temperature"
+      unit_of_measurement: "C"
+      device_class: temperature
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 93
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Temperature IPM"
+      unit_of_measurement: "C"
+      device_class: temperature
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 94
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - Temperature Boost"
+      unit_of_measurement: "C"
+      device_class: temperature
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 95
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Discharging Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1009
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Charging Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1011
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Voltage"
+      unit_of_measurement: "V"
+      device_class: voltage
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 1013
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - SOC"
+      unit_of_measurement: "%"
+      device_class: battery
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 1014
+    - platform: modbus_controller
+      name: "Meter - AC Grid Import Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1021
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Meter - AC Grid Export Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1029
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Inverter - AC Load Power"
+      unit_of_measurement: "W"
+      device_class: power
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1037
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Meter - Imported Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1044
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Meter - Imported Energy total"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1046
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Meter - Exported Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1048
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Meter - Exported Energy total"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1050
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Discharged Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1052
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Discharged Energy total"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1054
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Charged Energy today"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total_increasing
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1056
+      filters:
+        - multiply: 0.1
+    - platform: modbus_controller
+      name: "Battery - Charged Energy total"
+      unit_of_measurement: "kWh"
+      device_class: energy
+      state_class: total
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_DWORD
+      address: 1058
+      filters:
+        - multiply: 0.1
+    # Depends on BMS, if using non growatt battery you may get nothing
+    - platform: modbus_controller
+      name: "Battery - BMS Current"
+      unit_of_measurement: "A"
+      device_class: current
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 1088
+      filters:
+        - multiply: 0.001
+    # Depends on BMS, if using non growatt battery you may get nothing
+    - platform: modbus_controller
+      name: "Battery - BMS Temperature"
+      unit_of_measurement: "C"
+      device_class: temperature
+      state_class: measurement
+      accuracy_decimals: 1
+      register_type: read
+      value_type: U_WORD
+      address: 1089
+      #filters:
+      #  - multiply: 0.001
+    # Depends on BMS, if using non growatt battery you may get nothing
+    # On my BSLBatt it looks to be the summary cell voltage for battery1, not cell1.
+    # - platform: modbus_controller
+    #   name: "Battery - BMS Cell1 Voltage"
+    #   unit_of_measurement: "V"
+    #   device_class: voltage
+    #   state_class: measurement
+    #   accuracy_decimals: 1
+    #   register_type: read
+    #   value_type: U_WORD
+    #   address: 1108
+    #   filters:
+    #     - multiply: 0.001
+    # Depends on BMS, if using non growatt battery you may get nothing
+    # On my BSLBatt it looks to be the summary cell voltage for battery2, not cell2.
+    # - platform: modbus_controller
+    #   name: "Battery - BMS Cell2 Voltage"
+    #   unit_of_measurement: "V"
+    #   device_class: voltage
+    #   state_class: measurement
+    #   accuracy_decimals: 1
+    #   register_type: read
+    #   value_type: U_WORD
+    #   address: 1109
+    #   filters:
+    #     - multiply: 0.001
+    # add for more batteries/cells - up to 16 (id: 1123)
+    #
+    # Experimental registers read for test
+    #
+    # - platform: modbus_controller
+    #   name: "Inverter - ExportLimitEN"
+    #   accuracy_decimals: 1
+    #   register_type: holding
+    #   value_type: U_WORD
+    #   address: 122
+    # - platform: modbus_controller
+    #   name: "Inverter - EESysInfo"
+    #   accuracy_decimals: 1
+    #   register_type: holding
+    #   value_type: U_WORD
+    #   address: 1008
+    # - platform: modbus_controller
+    #   name: "Inverter - Battery Temperature"
+    #   unit_of_measurement: "C"
+    #   device_class: temperature
+    #   state_class: measurement
+    #   accuracy_decimals: 1
+    #   register_type: read
+    #   value_type: U_WORD
+    #   address: 1040
+
+#######################################
+# Input (READ) Register Text Sensors  #
+#######################################
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      name: "Growatt IP Address"
+    ssid:
+      name: "Growatt Wi-Fi SSID"
+    bssid:
+      name: "Growatt Wi-Fi BSSID"
+  - platform: version
+    name: "ESPHome Version"
+    hide_timestamp: true
+  - platform: modbus_controller
+    register_type: read
+    address: 0
+    raw_encode: HEXBYTES
+    name: Inverter - Status
+    # Status 5 is not documented, but my SPH sends this when in Normal condition
+    lambda: |-
+      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      ESP_LOGD("main","status value : %d", value);
+      switch (value) {
+        case 0: return std::string("waiting");
+        case 1: return std::string("normal");
+        case 3: return std::string("fault");
+        case 5: return std::string("normal");
+        default: return std::string("unknown");
+      }
+      return x;
+  - platform: modbus_controller
+    register_type: read
+    address: 118
+    raw_encode: HEXBYTES
+    name: Inverter - Operating Mode
+    lambda: |-
+      uint16_t value = modbus_controller::word_from_hex_str(x, 0);
+      ESP_LOGD("main","opermode value : %d", value);
+      switch (value) {
+        case 0: return std::string("Load first");
+        case 1: return std::string("Battery First");
+        case 2: return std::string("Grid First");
+        default: return std::string("unknown");
+      }
+      return x;
+
+
+###################################
+# Buttons for Restart / Shutdown  #
+###################################
+
+
+button:
+  - platform: restart
+    name: "Growatt ESP32 Restart"
+  - platform: template
+    name: "Inverter - remote shutdown (WARNING - No remote start)"
+    on_press:
+      then:
+        - lambda: |-
+            modbus_controller::ModbusController *controller = id(growatt_modbus_controller);
+            modbus_controller::ModbusCommandItem shutdowninv = modbus_controller::ModbusCommandItem::create_write_single_command(controller, 0, 0);
+            controller->queue_command(shutdowninv);
+
+
+
