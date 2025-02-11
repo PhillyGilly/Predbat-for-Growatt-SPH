@@ -25,8 +25,9 @@ https://springfall2008.github.io/batpred/inverter-setup/#i-want-to-add-an-unsupp
 ![2025-02-02 08 37 40](https://github.com/user-attachments/assets/602e5737-80f4-4e65-9c46-14f665097cab)
 You need to enable this through the front panel
 ![2025-02-02 08 37 56](https://github.com/user-attachments/assets/2daa8f3c-ccf5-40b3-ab1f-a3443b6f3552)
-
+This is where I found the monitor/control
 ![2025-02-02 08 38 09](https://github.com/user-attachments/assets/e0dd59e3-0c1a-4c7a-8fdf-267a9f8e29b8)
+I just used a pare tehternet cable and picked out cores 
 ![2025-02-02 11 28 45](https://github.com/user-attachments/assets/9225d55e-b4ef-4e6c-9bc2-fb8c27ead925)
 ![2025-02-05 12 29 36](https://github.com/user-attachments/assets/0b3cd294-e97e-4e80-a23f-e26ba250af47)
 ![image](https://github.com/user-attachments/assets/0a69f93d-d1b2-47fd-bf5e-b47522f1143f)
