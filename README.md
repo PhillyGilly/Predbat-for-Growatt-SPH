@@ -16,3 +16,7 @@ Steps to solution:
 4. Create new apps.yaml for Predbat
 5. Create new service for Predbat
 
+Background reading here:
+https://community.home-assistant.io/t/esp8266-rs485-on-growatt-inverter-spurious-data-between-updates/529913/22
+https://springfall2008.github.io/batpred/inverter-setup/#i-want-to-add-an-unsupported-inverter-to-predbat
+
