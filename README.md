@@ -28,8 +28,14 @@ You need to enable this through the front panel
 This is where I found the monitor/control
 ![2025-02-02 08 38 09](https://github.com/user-attachments/assets/e0dd59e3-0c1a-4c7a-8fdf-267a9f8e29b8)
 ![2025-01-17 09 57 58](https://github.com/user-attachments/assets/fbfd019a-c932-41ad-980f-0ae884f000dc)
-I just used a spare tehternet cable and picked out the orange + orange/white cores 
+I just used a spare ethernet cable and picked out the orange + orange/white cores 
 ![2025-02-02 11 28 45](https://github.com/user-attachments/assets/9225d55e-b4ef-4e6c-9bc2-fb8c27ead925)
-This is my ESP2866 running WEMOSD1   yaml
+I haven't addressed the issues raised here but I am using an auto-control TTL-RS485 board
 ![2025-02-05 12 29 36](https://github.com/user-attachments/assets/0b3cd294-e97e-4e80-a23f-e26ba250af47)
+This is my ESP2866 running WEMOSD1....yaml
+One of the key points from CRC private diysolarforum group yaml is that ESP2866 is underpowered
 ![image](https://github.com/user-attachments/assets/0a69f93d-d1b2-47fd-bf5e-b47522f1143f)
+This is the first pass ESP32 - mqtt running
+![image](https://github.com/user-attachments/assets/233d5743-a03c-4373-9b63-47a71f7e2477)
+As viewed in MQTT explorer
+
