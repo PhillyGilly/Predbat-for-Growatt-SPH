@@ -23,7 +23,7 @@ https://community.home-assistant.io/t/esp8266-rs485-on-growatt-inverter-spurious
 https://springfall2008.github.io/batpred/inverter-setup/#i-want-to-add-an-unsupported-inverter-to-predbat
 
 ![2025-02-02 08 37 40](https://github.com/user-attachments/assets/602e5737-80f4-4e65-9c46-14f665097cab)
-You need to enable this through the front panel
+You need to set com2 to VPP the front panel
 ![2025-02-02 08 37 56](https://github.com/user-attachments/assets/2daa8f3c-ccf5-40b3-ab1f-a3443b6f3552)
 This is where I found the monitor/control yaml code
 ![image](https://github.com/user-attachments/assets/e294425d-d9e0-490e-b2d5-5172f848da38)
