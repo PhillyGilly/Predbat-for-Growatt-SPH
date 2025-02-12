@@ -2,7 +2,7 @@
 
 This aim of this project is to optimise the use of a family member's Growatt SPH hybrid inverter with Intelligent Octopus Go tariff.
 
-![20240830092644](https://github.com/user-attachments/assets/5f19ee7a-f41a-4229-8dd7-e4bd9c4d5664)
+![image](https://github.com/user-attachments/assets/935202ee-259b-4bde-a70e-6350fbf2fb35)
 
 As I already have a working GivEnergy installation with Home Assistant and Predbat, I decided to try to set up the same kind of system on their Growatt.
 The main challenges here are:
@@ -25,10 +25,11 @@ https://springfall2008.github.io/batpred/inverter-setup/#i-want-to-add-an-unsupp
 ![2025-02-02 08 37 40](https://github.com/user-attachments/assets/602e5737-80f4-4e65-9c46-14f665097cab)
 You need to enable this through the front panel
 ![2025-02-02 08 37 56](https://github.com/user-attachments/assets/2daa8f3c-ccf5-40b3-ab1f-a3443b6f3552)
-This is where I found the monitor/control
-![2025-02-02 08 38 09](https://github.com/user-attachments/assets/e0dd59e3-0c1a-4c7a-8fdf-267a9f8e29b8)
+This is where I found the monitor/control yaml code
+![image](https://github.com/user-attachments/assets/e294425d-d9e0-490e-b2d5-5172f848da38)
+From the manual
 ![2025-01-17 09 57 58](https://github.com/user-attachments/assets/fbfd019a-c932-41ad-980f-0ae884f000dc)
-I just used a spare ethernet cable and picked out the orange + orange/white cores 
+I just used a spare ethernet cable and picked out the orange, orange/white and green cores 
 ![2025-02-02 11 28 45](https://github.com/user-attachments/assets/9225d55e-b4ef-4e6c-9bc2-fb8c27ead925)
 I haven't addressed the issues raised here but I am using an auto-control TTL-RS485 board
 ![2025-02-05 12 29 36](https://github.com/user-attachments/assets/0b3cd294-e97e-4e80-a23f-e26ba250af47)
