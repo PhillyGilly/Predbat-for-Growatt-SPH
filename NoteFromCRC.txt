@@ -1,0 +1,34 @@
+Christian Ravn Christiansen
+Phil Gilbert So here it comes, long post - sorry!
+I set timeslot3 to 00:00 - 23:59 - and keep it there always!
+I then use the timeslot enable together with AC charge and load soc to control the different modes.
+There are multiple ways to do this, you need to read more about how growatt works in the different modes!
+The below examples does not address the forced export, but maybe i can help with that if needed.
+The Growatt dongle works in the same way by setting modbus registers!
+Below is from my old pyscript HA addon, but i think you will get the idea
+Stop Charge or stop discharge (to load) (combined call to stop both):
+#switch.battery_battery_first_timeslot_3_enabled.turn_on()
+#switch.battery_battery_first_ac_charge_enabled.turn_off()
+#number.battery_battery_first_charge_stop_soc.set_value(int(battery_soc)) <- Set stop soc = current SOC, i dont remember is this is actually needed
+Allow discharge battery -> Load:
+(The load low battery stop needs to be set to your lowest allowed soc, ex: "number.battery_load_first_discharge_stop_soc.set_value(20)" <- allow discharge to 20%
+#switch.battery_battery_first_timeslot_3_enabled.turn_off()
+AC Charge Start:
+#number.battery_battery_first_charge_stop_soc.set_value(100) <- you can set other value to control charge SOC
+#switch.battery_battery_first_timeslot_3_enabled.turn_on()
+#switch.battery_battery_first_ac_charge_enabled.turn_on()
+I now use Deye/Sunsynk in the same way, with modbus. Here are my predbat calls, maybe you can use them with above to build your controls.
+(Note, i dont use the batpred referred Sunsync integration)
+charge_start_service:
+service: switch.turn_on
+entity_id: "switch.deye12k_timeslot_6_grid_charge_enable"
+charge_stop_service:
+service: switch.turn_off
+entity_id: "switch.deye12k_timeslot_6_grid_charge_enable"
+charge_freeze_service:
+service: automation.trigger
+entity_id: "automation.deye12k_set_soc_to_current_soc"
+charge_limit:
+- number.deye12k_timeslot_6_soc
+soc_percent:
+- sensor.deye12k_battery_soc
