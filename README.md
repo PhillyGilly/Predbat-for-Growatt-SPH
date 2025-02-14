@@ -29,7 +29,7 @@ This is where I found the monitor/control yaml code
 ![image](https://github.com/user-attachments/assets/e294425d-d9e0-490e-b2d5-5172f848da38)
 From the manual
 ![2025-01-17 09 57 58](https://github.com/user-attachments/assets/fbfd019a-c932-41ad-980f-0ae884f000dc)
-I just used a spare ethernet cable and picked out the orange, orange/white and green cores 
+I just used a spare ethernet cable and picked out the orange, orange/white and green cores. Note some reports of cores 4/5 being used
 ![2025-02-02 11 28 45](https://github.com/user-attachments/assets/9225d55e-b4ef-4e6c-9bc2-fb8c27ead925)
 I haven't addressed the issues raised here but I am using an auto-control TTL-RS485 board
 ![2025-02-05 12 29 36](https://github.com/user-attachments/assets/0b3cd294-e97e-4e80-a23f-e26ba250af47)
