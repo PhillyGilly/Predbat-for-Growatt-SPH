@@ -30,10 +30,12 @@ This is where I found the monitor/control yaml code
 From the manual
 ![2025-01-17 09 57 58](https://github.com/user-attachments/assets/fbfd019a-c932-41ad-980f-0ae884f000dc)
 I just used a spare ethernet cable and picked out the orange, orange/white and green cores. Note some reports of cores 4/5 being used
-![2025-02-02 11 28 45](https://github.com/user-attachments/assets/9225d55e-b4ef-4e6c-9bc2-fb8c27ead925)
-I haven't addressed the issues raised here but I am using an auto-control TTL-RS485 board
-![2025-02-05 12 29 36](https://github.com/user-attachments/assets/0b3cd294-e97e-4e80-a23f-e26ba250af47)
-This is my ESP2866 running WEMOSD1....yaml
+![image](https://github.com/user-attachments/assets/ce5a64e6-fa42-4f35-a223-ef3faf8afa93)
+Fritzing sketch
+![2025-03-03 13 44 24](https://github.com/user-attachments/assets/04073b04-0117-4aab-b2e4-b2d62618f2ae)
+The back
+![2025-03-10 17 57 36](https://github.com/user-attachments/assets/1afcfa83-dcc8-4636-941d-321ef46f877c)
+The front
 One of the key points from CRC private diysolarforum group yaml is that ESP2866 is underpowered
 ![image](https://github.com/user-attachments/assets/0a69f93d-d1b2-47fd-bf5e-b47522f1143f)
 This is the first pass ESP32 - mqtt running
