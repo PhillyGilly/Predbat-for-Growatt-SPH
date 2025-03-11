@@ -28,8 +28,7 @@ You need to set com2 to VPP the front panel
 This is where I found the monitor/control yaml code
 ![image](https://github.com/user-attachments/assets/e294425d-d9e0-490e-b2d5-5172f848da38)
 From the manual
-![2025-01-17 09 57 58](https://github.com/user-attachments/assets/fbfd019a-c932-41ad-980f-0ae884f000dc)
-I just used a spare ethernet cable and picked out the orange, orange/white and green cores. Note some reports of cores 4/5 being used
+I just used a spare ethernet cable and picked out the orange/white and blue/white cores. Note some reports of cores 4/5 being used
 ![image](https://github.com/user-attachments/assets/ce5a64e6-fa42-4f35-a223-ef3faf8afa93)
 Fritzing sketch
 ![2025-03-03 13 44 24](https://github.com/user-attachments/assets/04073b04-0117-4aab-b2e4-b2d62618f2ae)
